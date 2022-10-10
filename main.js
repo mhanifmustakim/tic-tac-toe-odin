@@ -30,6 +30,19 @@ const GameBoard = (function () {
         render();
     }
 
+    const checkWinRows = () => {
+        for (let row = 0; row < board.length; row++) {
+            const sign = board[row][0];
+            return board[row].every((val) => val === sign);
+        }
+    }
+
+    const checkWinCondition = () => {
+        if (checkWinRows()) {
+            Game.end();
+        }
+    }
+
     const render = () => {
         for (let row = 0; row < board.length; row++) {
             for (let col = 0; col < board[row].length; col++) {
@@ -37,6 +50,7 @@ const GameBoard = (function () {
                 cell.innerText = board[row][col];
             }
         }
+        checkWinCondition();
     }
 
     return {
@@ -89,8 +103,14 @@ const Game = (function () {
         }
     }
 
+    const end = () => {
+        console.log(currentPlayer.sign, "won!");
+        document.querySelectorAll("#gameBoard>div").forEach((cell) => cell.removeEventListener("click", GameBoard.onClick));
+    }
+
     return {
         start,
+        end,
         nextPlayer,
         getCurrentPlayer
     }
