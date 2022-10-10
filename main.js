@@ -21,13 +21,12 @@ const GameBoard = (function () {
             col: parseInt(event.target.getAttribute("data-col"))
         }
 
-        update(pos, Game.getCurrentPlayer());
+        Game.makeMove(pos);
         cell.removeEventListener("click", onClick);
     }
 
     const update = ({ row, col }, { sign }) => {
         board[row][col] = sign;
-        Game.nextPlayer();
         render();
     }
 
@@ -42,8 +41,8 @@ const GameBoard = (function () {
 
     return {
         init,
-        render,
-        onClick
+        onClick,
+        update
     }
 })();
 
@@ -61,8 +60,9 @@ const Game = (function () {
     let players = [Player("Nips", "X"), Player("Spin", "O")];
     let currentPlayer = players[0];
 
-    const getCurrentPlayer = () => {
-        return currentPlayer;
+    const makeMove = (pos) => {
+        GameBoard.update(pos, currentPlayer);
+        nextPlayer();
     }
 
     const nextPlayer = () => {
@@ -86,8 +86,7 @@ const Game = (function () {
 
     return {
         start,
-        getCurrentPlayer,
-        nextPlayer
+        makeMove
     }
 })();
 
