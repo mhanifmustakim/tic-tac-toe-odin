@@ -21,11 +21,11 @@ const GameBoard = (function () {
             col: parseInt(event.target.getAttribute("data-col"))
         }
 
-        Game.makeMove(pos);
+        Game.getCurrentPlayer().makeMove(pos);
         cell.removeEventListener("click", onClick);
     }
 
-    const update = ({ row, col }, { sign }) => {
+    const update = ({ row, col }, sign) => {
         board[row][col] = sign;
         render();
     }
@@ -48,9 +48,15 @@ const GameBoard = (function () {
 
 // Factory Function for creating a new player
 const Player = function (name, sign) {
+    const makeMove = (pos) => {
+        GameBoard.update(pos, sign);
+        Game.nextPlayer();
+    }
+
     return {
         name,
-        sign
+        sign,
+        makeMove
     }
 }
 
@@ -60,9 +66,8 @@ const Game = (function () {
     let players = [Player("Nips", "X"), Player("Spin", "O")];
     let currentPlayer = players[0];
 
-    const makeMove = (pos) => {
-        GameBoard.update(pos, currentPlayer);
-        nextPlayer();
+    const getCurrentPlayer = () => {
+        return currentPlayer
     }
 
     const nextPlayer = () => {
@@ -86,7 +91,8 @@ const Game = (function () {
 
     return {
         start,
-        makeMove
+        nextPlayer,
+        getCurrentPlayer
     }
 })();
 
