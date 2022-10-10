@@ -82,15 +82,17 @@ input[type="text"]:focus-visible {
     align-items: center;
 }
 
-#main>.log {
+.log {
     font-family: 'Courier New', Courier, monospace;
     font-size: clamp(1.2rem, 5vw, 2rem);
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
 }
 
 #gameLog-top {
+    font-size: clamp(0.7rem, 3vw, 2rem);
     gap: 2rem;
 }
 
@@ -149,3 +151,16 @@ input[type="text"]:focus-visible {
 .form-control>.input-name {
     width: 20ch;
 }
+
+/* 
+@media screen and (max-width: 425px) {
+    #gameLog-top {
+        font-size: 1rem;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    #gameLog-top {
+        font-size: 0.8rem;
+    }
+} */

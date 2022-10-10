@@ -118,8 +118,12 @@ const Player = function (name, sign) {
 // Handles every game continuation logic
 const Game = (function () {
     let board = GameBoard.init();
-    let players = [Player("Nips", "X"), Player("Spin", "O")];
-    let currentPlayer = players[0];
+    let players, currentPlayer;
+
+    const setPlayers = (p1, p2) => {
+        players = [p1, p2];
+        currentPlayer = players[0];
+    }
 
     const getCurrentPlayer = () => {
         return currentPlayer
@@ -164,6 +168,7 @@ const Game = (function () {
         start,
         win,
         draw,
+        setPlayers,
         nextPlayer,
         getCurrentPlayer
     }
@@ -188,4 +193,45 @@ const GameLog = (function () {
         setLog,
         setPlayers
     }
-})()
+})();
+
+const FormControl = (function () {
+    form = document.querySelector("#player-form");
+
+    const getPlayer1 = () => {
+        const nameInput = form.querySelector("#p1-name");
+        const signInput = form.querySelector("#p1-sign");
+        const name = nameInput.value || nameInput.placeholder;
+        const sign = signInput.value || signInput.placeholder;
+        return Player(name, sign)
+    }
+
+    const getPlayer2 = () => {
+        const nameInput = form.querySelector("#p2-name");
+        const signInput = form.querySelector("#p2-sign");
+        const name = nameInput.value || nameInput.placeholder;
+        const sign = signInput.value || signInput.placeholder;
+
+        return Player(name, sign)
+    }
+
+    const toggleDisplay = () => {
+        form.classList.toggle("display-none");
+        document.querySelector("#gameBoard").classList.toggle("display-none");
+        const VS = document.querySelector("#player1").nextElementSibling;
+        VS.hidden = VS.hidden ? false : true;
+    }
+
+    const formSubmit = (event) => {
+        event.preventDefault();
+        Game.setPlayers(getPlayer1(), getPlayer2());
+        toggleDisplay();
+        Game.start();
+    }
+
+    return {
+        formSubmit
+    }
+})();
+
+document.querySelector("#player-form").addEventListener("submit", FormControl.formSubmit);
