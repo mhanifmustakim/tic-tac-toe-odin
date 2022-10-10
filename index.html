@@ -21,11 +21,45 @@
         <div id="main">
             <div id="gameLog-top" class="log">
                 <div id="player1"></div>
-                <div>VS</div>
+                <div hidden>VS</div>
                 <div id="player2"></div>
             </div>
-            <div id="gameBoard">
+            <div id="gameBoard" class="display-none">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
             </div>
+            <form id="player-form">
+                <div class="form-group">
+                    <header>Player 1</header>
+                    <div class="form-control">
+                        <label for="p1-name">Nickname :</label>
+                        <input type="text" id="p1-name" class="input-name" maxlength="15" placeholder="Player 1">
+                    </div>
+                    <div class="form-control">
+                        <label for="p1-sign">Marker :</label>
+                        <input type="text" id="p1-sign" class="input-sign" maxlength="1" placeholder="X">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <header>Player 2</header>
+                    <div class="form-control">
+                        <label for="p2-name">Nickname :</label>
+                        <input type="text" id="p2-name" class="input-name" maxlength="15" placeholder="Player 2">
+                    </div>
+                    <div class="form-control">
+                        <label for="p2-sign">Marker :</label>
+                        <input type="text" id="p2-sign" class="input-sign" maxlength="1" placeholder="O">
+                    </div>
+                </div>
+                <button type="submit">Start Game</button>
+            </form>
             <div id="gameLog-bottom" class="log"></div>
         </div>
         <div id="footer">

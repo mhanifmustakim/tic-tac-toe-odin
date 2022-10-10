@@ -189,5 +189,3 @@ const GameLog = (function () {
         setPlayers
     }
 })()
-
-Game.start();
