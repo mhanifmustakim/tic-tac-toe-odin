@@ -30,15 +30,35 @@ const GameBoard = (function () {
         render();
     }
 
-    const checkWinRows = () => {
-        for (let row = 0; row < board.length; row++) {
-            const sign = board[row][0];
-            return board[row].every((val) => val === sign);
+    const checkSimilar = (arr) => {
+        const first = arr[0];
+        if (first) {
+            return arr.every((val) => val === first);
         }
     }
 
-    const checkWinCondition = () => {
-        if (checkWinRows()) {
+    const checkWinRows = () => {
+        const results = [];
+        for (let row = 0; row < board.length; row++) {
+            results.push(checkSimilar(board[row]));
+        }
+        return results.some((val) => val === true);
+    }
+
+    const checkWinCols = () => {
+        const results = [];
+        for (let col = 0; col < board[0].length; col++) {
+            const column = [];
+            for (let row = 0; row < board.length; row++) {
+                column.push(board[row][col]);
+            }
+            results.push(checkSimilar(column));
+        }
+        return results.some((val) => val === true);
+    }
+
+    const checkEndCondition = () => {
+        if (checkWinRows() || checkWinCols()) {
             Game.end();
         }
     }
@@ -50,7 +70,7 @@ const GameBoard = (function () {
                 cell.innerText = board[row][col];
             }
         }
-        checkWinCondition();
+        checkEndCondition();
     }
 
     return {
