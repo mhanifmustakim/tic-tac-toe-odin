@@ -41,6 +41,7 @@
 #main {
     display: grid;
     grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto 1fr;
     place-items: center;
     align-content: center;
 }
@@ -64,8 +65,18 @@
 }
 
 #main>.log {
-    margin: 1.5em 0;
     font-family: 'Courier New', Courier, monospace;
     font-size: clamp(1.2rem, 5vw, 2rem);
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#gameLog-top {
+    gap: 2rem;
+}
+
+#player1,
+#player2 {
+    font-weight: bold;
 }

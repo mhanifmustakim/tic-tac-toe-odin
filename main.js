@@ -142,6 +142,8 @@ const Game = (function () {
                 gameBoardEl.appendChild(cell);
             }
         }
+
+        GameLog.setPlayers(players);
     }
 
     const gameOver = () => {
@@ -149,12 +151,12 @@ const Game = (function () {
     }
 
     const win = () => {
-        console.log(currentPlayer.sign, "won!");
+        GameLog.setLog(`Congratulations, ${currentPlayer.name} won!`);
         gameOver();
     }
 
     const draw = () => {
-        console.log("It's a draw!");
+        GameLog.setLog(`Great game, it's a draw!`);
         gameOver();
     }
 
@@ -166,5 +168,26 @@ const Game = (function () {
         getCurrentPlayer
     }
 })();
+
+// Handles gameLogging, displaying logs to the web page
+const GameLog = (function () {
+    const player1Log = document.querySelector("#player1");
+    const player2Log = document.querySelector("#player2");
+    const mainLog = document.querySelector("#gameLog-bottom");
+
+    const setLog = (str) => {
+        mainLog.innerText = str;
+    }
+
+    const setPlayers = ([player1, player2]) => {
+        player1Log.innerText = `${player1.name} ==> ${player1.sign}`;
+        player2Log.innerText = `${player2.sign} <== ${player2.name}`;
+    }
+
+    return {
+        setLog,
+        setPlayers
+    }
+})()
 
 Game.start();
