@@ -1,0 +1,71 @@
+*,
+*::after,
+*::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-size: inherit;
+    color: inherit;
+}
+
+:root {
+    --header-height: 5rem;
+    --footer-height: 3rem;
+    --main-height: calc(100vh - var(--footer-height) - var(--header-height));
+    --gameBoard-size: clamp(300px, 80vw, 500px);
+    --bg-color: #F4EBD0;
+    --main-color: #D6AD60;
+    font-size: 16px;
+    font-family: 'Roboto';
+}
+
+#master {
+    display: grid;
+    grid-template-rows: var(--header-height) var(--main-height) var(--footer-height);
+    background-color: var(--bg-color);
+}
+
+#header,
+#footer {
+    background-color: var(--main-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+#header {
+    font-size: 2.5rem;
+}
+
+#main {
+    display: grid;
+    grid-template-columns: 1fr;
+    place-items: center;
+    align-content: center;
+}
+
+#gameBoard {
+    width: var(--gameBoard-size);
+    height: var(--gameBoard-size);
+    background-color: var(--main-color);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 0.5rem;
+    font-size: clamp(2rem, 7vw, 3rem);
+}
+
+#gameBoard>div {
+    background-color: var(--bg-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#main>.log {
+    margin: 1.5em 0;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(1.2rem, 5vw, 2rem);
+    text-align: center;
+}
