@@ -57,9 +57,30 @@ const GameBoard = (function () {
         return results.some((val) => val === true);
     }
 
+    const checkWinDiagonals = () => {
+        let diag1 = [];
+        let diag2 = [];
+        for (let i = 0; i < board.length; i++) {
+            diag1.push(board[i][i]);
+            diag2.push(board[i][board.length - 1 - i]);
+        }
+
+        return checkSimilar(diag1) || checkSimilar(diag2);
+    }
+
+    const checkDraw = () => {
+        for (let row = 0; row < board.length; row++) {
+            if (board[row].some((val) => val === null)) return false
+        }
+
+        return true;
+    }
+
     const checkEndCondition = () => {
-        if (checkWinRows() || checkWinCols()) {
-            Game.end();
+        if (checkWinRows() || checkWinCols() || checkWinDiagonals()) {
+            Game.win();
+        } else if (checkDraw()) {
+            Game.draw();
         }
     }
 
@@ -123,14 +144,24 @@ const Game = (function () {
         }
     }
 
-    const end = () => {
-        console.log(currentPlayer.sign, "won!");
+    const gameOver = () => {
         document.querySelectorAll("#gameBoard>div").forEach((cell) => cell.removeEventListener("click", GameBoard.onClick));
+    }
+
+    const win = () => {
+        console.log(currentPlayer.sign, "won!");
+        gameOver();
+    }
+
+    const draw = () => {
+        console.log("It's a draw!");
+        gameOver();
     }
 
     return {
         start,
-        end,
+        win,
+        draw,
         nextPlayer,
         getCurrentPlayer
     }
