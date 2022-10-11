@@ -7,6 +7,10 @@ const GameBoard = (function () {
         return board
     }
 
+    const getBoard = () => {
+        return board;
+    }
+
     const onClick = (event) => {
         const cell = event.target;
 
@@ -101,7 +105,8 @@ const GameBoard = (function () {
     return {
         init,
         onClick,
-        update
+        update,
+        getBoard
     }
 })();
 
@@ -115,13 +120,39 @@ const Player = function (name, sign) {
     return {
         name,
         sign,
-        makeMove
+        makeMove,
+        type: "player"
+    }
+}
+
+//Factory function for creating a computer
+const Computer = function (sign) {
+    const makeMove = () => {
+        const board = GameBoard.getBoard();
+        const availableCells = [];
+        for (let row = 0; row < board.length; row++) {
+            for (let col = 0; col < board[row].length; col++) {
+                if (!board[row][col]) availableCells.push({ row, col });
+            }
+        }
+
+        const randomPos = availableCells[Math.floor(Math.random() * availableCells.length)];
+        GameBoard.update(randomPos, sign);
+        Game.nextPlayer();
+    }
+
+    return {
+        sign,
+        makeMove,
+        name: "Computer",
+        type: "Computer",
     }
 }
 
 // Handles every game continuation logic
 const Game = (function () {
     let board = GameBoard.init();
+    let isGameOver;
     let players, currentPlayer;
 
     const setPlayers = (p1, p2) => {
@@ -135,12 +166,14 @@ const Game = (function () {
 
     const nextPlayer = () => {
         currentPlayer = currentPlayer === players[0] ? players[1] : players[0];
+        if (currentPlayer.type === "Computer" && !isGameOver) currentPlayer.makeMove();
     }
 
     const start = () => {
         const gameBoardEl = document.querySelector("#gameBoard");
         gameBoardEl.innerHTML = "";
         GameBoard.init();
+        isGameOver = false;
 
         for (let row = 0; row < board.length; row++) {
             for (let col = 0; col < board[row].length; col++) {
@@ -157,15 +190,17 @@ const Game = (function () {
 
     const gameOver = () => {
         document.querySelectorAll("#gameBoard>div").forEach((cell) => cell.removeEventListener("click", GameBoard.onClick));
+        isGameOver = true;
     }
 
     const reset = () => {
         GameLog.reset();
         start();
+        if (currentPlayer.type === "Computer") currentPlayer.makeMove();
     }
 
     const win = () => {
-        GameLog.setLog(`Congratulations, ${currentPlayer.name} won!`);
+        GameLog.setLog(`Congratulations, ${currentPlayer.name} (${currentPlayer.sign}) won!`);
         GameLog.toggleControls();
         gameOver();
     }
@@ -257,6 +292,12 @@ const FormControl = (function () {
     const getPlayer2 = () => {
         const nameInput = form.querySelector("#p2-name");
         const signInput = form.querySelector("#p2-sign");
+        const isComp = form.querySelector("#p2-isComputer");
+
+        if (isComp.checked) {
+            return Computer("O");
+        }
+
         const name = nameInput.value || nameInput.placeholder;
         const sign = signInput.value || signInput.placeholder;
         clearForm([nameInput, signInput]);

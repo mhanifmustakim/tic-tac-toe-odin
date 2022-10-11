@@ -37,6 +37,10 @@ input[type="text"]:focus-visible {
     outline: none;
 }
 
+input[type="checkbox"] {
+    width: 1ch;
+}
+
 #master {
     display: grid;
     grid-template-rows: var(--header-height) var(--main-height) var(--footer-height);
@@ -117,7 +121,7 @@ input[type="text"]:focus-visible {
 }
 
 #player-form {
-    font-size: clamp(1rem, 3vw, 1.5rem);
+    font-size: clamp(1rem, 3vw, 1.3rem);
     width: var(--gameBoard-size);
     height: var(--gameBoard-size);
     display: grid;
@@ -155,7 +159,7 @@ input[type="text"]:focus-visible {
     color: whitesmoke;
 }
 
-.form-control>label {
+.form-control>:first-child {
     justify-self: end;
 }
 
