@@ -198,11 +198,17 @@ const GameLog = (function () {
 const FormControl = (function () {
     form = document.querySelector("#player-form");
 
+    const clearForm = (inputs) => {
+        inputs.forEach((input) => input.value = "");
+    }
+
     const getPlayer1 = () => {
         const nameInput = form.querySelector("#p1-name");
         const signInput = form.querySelector("#p1-sign");
         const name = nameInput.value || nameInput.placeholder;
         const sign = signInput.value || signInput.placeholder;
+        clearForm([nameInput, signInput]);
+
         return Player(name, sign)
     }
 
@@ -211,6 +217,7 @@ const FormControl = (function () {
         const signInput = form.querySelector("#p2-sign");
         const name = nameInput.value || nameInput.placeholder;
         const sign = signInput.value || signInput.placeholder;
+        clearForm([nameInput, signInput]);
 
         return Player(name, sign)
     }
