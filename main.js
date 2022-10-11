@@ -76,8 +76,12 @@ const GameBoard = (function () {
         return true;
     }
 
+    const checkWin = () => {
+        return checkWinRows() || checkWinCols() || checkWinDiagonals();
+    }
+
     const checkEndCondition = () => {
-        if (checkWinRows() || checkWinCols() || checkWinDiagonals()) {
+        if (checkWin()) {
             Game.win();
         } else if (checkDraw()) {
             Game.draw();
