@@ -210,12 +210,10 @@ const Computer = function (sign) {
 
     const minimax = (board, isMaximizing) => {
         if (board.checkWin()) {
-            console.log(board.getBoard(), board.getWinner());
             return {
                 score: board.getWinner().sign === sign ? 1 : -1
             }
         } else if (board.checkDraw()) {
-            console.log("draw", board.getBoard());
             return { score: 0 };
         }
 
@@ -233,7 +231,6 @@ const Computer = function (sign) {
                     bestMove = cell;
                     if (bestScore === 1) break;
                 }
-                console.log({ bestScore, board: board.getBoard(), cell })
             }
             return { score, bestMove }
         } else {
@@ -248,7 +245,6 @@ const Computer = function (sign) {
                     bestMove = cell;
                     if (bestScore === -1) break;
                 }
-                console.log({ bestScore, board: board.getBoard(), cell })
             }
             return { score, bestMove }
         }
