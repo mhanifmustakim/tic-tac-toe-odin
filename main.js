@@ -1,25 +1,14 @@
 // board Factory function to create an instance of board
 const Board = () => {
     let board;
-    let winner;
 
-    const init = (newBoard) => {
-        winner = null;
-        if (!newBoard) {
-            board = Array(3).fill(null).map((el) => (Array(3).fill(null)));
-        } else {
-            board = newBoard.slice();
-        }
-
+    const init = () => {
+        board = Array(3).fill(null).map((el) => (Array(3).fill(null)));
         return board
     }
 
     const getBoard = () => {
         return board
-    }
-
-    const getWinner = () => {
-        return winner
     }
 
     const getEmptyCells = () => {
@@ -97,7 +86,6 @@ const Board = () => {
         init,
         getBoard,
         getEmptyCells,
-        getWinner,
         update,
         checkWin,
         checkDraw
@@ -189,34 +177,10 @@ const Player = function (name, sign) {
 const Computer = function (sign) {
     const makeMove = () => {
         const availableCells = GameBoard.getEmptyCells();
-
         const randomPos = availableCells[Math.floor(Math.random() * availableCells.length)];
         GameBoard.update(randomPos, sign);
-        // const board = Board();
-        // board.init(GameBoard.getBoard());
-        // console.log(board.getBoard());
-        // minimax(board);
-
         Game.nextPlayer();
     }
-
-    // const minimax = (board, isMaximizng) => {
-    //     if (board.checkWin()) {
-    //         return board.getWinner().sign === sign ? 1 : -1;
-    //     } else if (board.checkDraw()) {
-    //         return 0;
-    //     }
-
-    //     const emptyCells = board.getEmptyCells();
-    //     for (let cell of emptyCells) {
-    //         let possibleMove = Board();
-    //         console.log(cell);
-    //         console.log(board.getBoard());
-    //         possibleMove.init(board.getBoard());
-    //         possibleMove.update(cell, "O");
-    //         console.log(possibleMove.getBoard());
-    //     }
-    // }
 
     return {
         sign,
