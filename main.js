@@ -186,6 +186,7 @@ const Game = (function () {
         }
 
         GameLog.setPlayers(players);
+        if (currentPlayer.type === "Computer") currentPlayer.makeMove();
     }
 
     const gameOver = () => {
@@ -196,7 +197,6 @@ const Game = (function () {
     const reset = () => {
         GameLog.reset();
         start();
-        if (currentPlayer.type === "Computer") currentPlayer.makeMove();
     }
 
     const win = () => {
@@ -282,6 +282,12 @@ const FormControl = (function () {
     const getPlayer1 = () => {
         const nameInput = form.querySelector("#p1-name");
         const signInput = form.querySelector("#p1-sign");
+        const isComp = form.querySelector("#p1-isComputer");
+
+        if (isComp.checked) {
+            return Computer("X");
+        }
+
         const name = nameInput.value || nameInput.placeholder;
         const sign = signInput.value || signInput.placeholder;
         clearForm([nameInput, signInput]);
