@@ -59,7 +59,7 @@ input[type="text"]:focus-visible {
 #main {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(5rem, 1fr) auto minmax(5rem, 1fr);
+    grid-template-rows: minmax(5rem, 2fr) auto minmax(7rem, 3fr);
     place-items: center;
     align-content: center;
 }
@@ -84,7 +84,7 @@ input[type="text"]:focus-visible {
 
 .log {
     font-family: 'Courier New', Courier, monospace;
-    font-size: clamp(1.2rem, 5vw, 2rem);
+    font-size: clamp(0.7rem, 3vw, 2rem);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -92,8 +92,23 @@ input[type="text"]:focus-visible {
 }
 
 #gameLog-top {
-    font-size: clamp(0.7rem, 3vw, 2rem);
     gap: 2rem;
+}
+
+#gameLog-bottom {
+    font-size: clamp(0.7rem, 3vw, 2rem);
+    flex-flow: column nowrap;
+    gap: 0.5rem;
+}
+
+#main-log {
+    font-size: 1.2em;
+}
+
+#game-controls>button {
+    font-size: 0.8em;
+    border-radius: 0.5em;
+    padding: 0.2em 1em;
 }
 
 #player1,
@@ -151,16 +166,3 @@ input[type="text"]:focus-visible {
 .form-control>.input-name {
     width: 20ch;
 }
-
-/* 
-@media screen and (max-width: 425px) {
-    #gameLog-top {
-        font-size: 1rem;
-    }
-}
-
-@media screen and (max-width: 320px) {
-    #gameLog-top {
-        font-size: 0.8rem;
-    }
-} */

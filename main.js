@@ -158,18 +158,27 @@ const Game = (function () {
         document.querySelectorAll("#gameBoard>div").forEach((cell) => cell.removeEventListener("click", GameBoard.onClick));
     }
 
+    const reset = () => {
+        GameBoard.init();
+        GameLog.reset();
+        start();
+    }
+
     const win = () => {
         GameLog.setLog(`Congratulations, ${currentPlayer.name} won!`);
+        GameLog.toggleControls();
         gameOver();
     }
 
     const draw = () => {
         GameLog.setLog(`Great game, it's a draw!`);
+        GameLog.toggleControls();
         gameOver();
     }
 
     return {
         start,
+        reset,
         win,
         draw,
         setPlayers,
@@ -182,10 +191,28 @@ const Game = (function () {
 const GameLog = (function () {
     const player1Log = document.querySelector("#player1");
     const player2Log = document.querySelector("#player2");
-    const mainLog = document.querySelector("#gameLog-bottom");
+    const mainLog = document.querySelector("#main-log");
+    const gameControls = document.querySelector("#game-controls");
 
     const setLog = (str) => {
         mainLog.innerText = str;
+    }
+
+    const toggleControls = () => {
+        gameControls.classList.toggle("display-none");
+    }
+
+    const initControls = () => {
+        const resetBtn = document.querySelector("#reset-btn");
+        const playerResetBtn = document.querySelector("#player-reset-btn");
+
+        resetBtn.addEventListener("click", Game.reset);
+        playerResetBtn.addEventListener("click", FormControl.toggleDisplay);
+    }
+
+    const reset = () => {
+        setLog("");
+        toggleControls();
     }
 
     const setPlayers = ([player1, player2]) => {
@@ -195,7 +222,10 @@ const GameLog = (function () {
 
     return {
         setLog,
-        setPlayers
+        setPlayers,
+        toggleControls,
+        initControls,
+        reset
     }
 })();
 
@@ -241,8 +271,10 @@ const FormControl = (function () {
     }
 
     return {
-        formSubmit
+        formSubmit,
+        toggleDisplay
     }
 })();
 
 document.querySelector("#player-form").addEventListener("submit", FormControl.formSubmit);
+GameLog.initControls();
