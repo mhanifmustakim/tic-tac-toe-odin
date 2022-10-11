@@ -163,10 +163,6 @@ input[type="checkbox"] {
     justify-self: end;
 }
 
-.form-control>.input-sign {
-    width: 2em;
-}
-
 .form-control>.input-name {
     width: 20ch;
 }

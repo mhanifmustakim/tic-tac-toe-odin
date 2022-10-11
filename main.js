@@ -1,18 +1,36 @@
 // board Factory function to create an instance of board
 const Board = () => {
     let board;
+    let winner;
 
     const init = (newBoard) => {
+        winner = null;
         if (!newBoard) {
             board = Array(3).fill(null).map((el) => (Array(3).fill(null)));
-            return board
+        } else {
+            board = newBoard.slice();
         }
 
-        board = newBoard;
+        return board
     }
 
     const getBoard = () => {
         return board
+    }
+
+    const getWinner = () => {
+        return winner
+    }
+
+    const getEmptyCells = () => {
+        const availableCells = [];
+        for (let row = 0; row < board.length; row++) {
+            for (let col = 0; col < board[row].length; col++) {
+                if (!board[row][col]) availableCells.push({ row, col });
+            }
+        }
+
+        return availableCells;
     }
 
     const update = ({ row, col }, sign) => {
@@ -66,12 +84,20 @@ const Board = () => {
     }
 
     const checkWin = () => {
-        return checkWinRows() || checkWinCols() || checkWinDiagonals();
+        if (checkWinRows() || checkWinCols() || checkWinDiagonals()) {
+            winner = Game.getCurrentPlayer();
+            return true
+        }
+
+        return false
+
     }
 
     return {
         init,
         getBoard,
+        getEmptyCells,
+        getWinner,
         update,
         checkWin,
         checkDraw
@@ -88,6 +114,10 @@ const GameBoard = (function () {
 
     const getBoard = () => {
         return board.getBoard();
+    }
+
+    const getEmptyCells = () => {
+        return board.getEmptyCells();
     }
 
     const onClick = (event) => {
@@ -108,7 +138,6 @@ const GameBoard = (function () {
     }
 
     const update = ({ row, col }, sign) => {
-        console.log({ row, col }, sign);
         board.update({ row, col }, sign)
         render();
     }
@@ -136,7 +165,8 @@ const GameBoard = (function () {
         init,
         onClick,
         update,
-        getBoard
+        getBoard,
+        getEmptyCells
     }
 })();
 
@@ -158,22 +188,34 @@ const Player = function (name, sign) {
 //Factory function for creating a computer
 const Computer = function (sign) {
     const makeMove = () => {
-        const board = GameBoard.getBoard();
-        const availableCells = [];
-        for (let row = 0; row < board.length; row++) {
-            for (let col = 0; col < board[row].length; col++) {
-                if (!board[row][col]) availableCells.push({ row, col });
-            }
-        }
+        const availableCells = GameBoard.getEmptyCells();
 
         const randomPos = availableCells[Math.floor(Math.random() * availableCells.length)];
         GameBoard.update(randomPos, sign);
+        // const board = Board();
+        // board.init(GameBoard.getBoard());
+        // console.log(board.getBoard());
+        // minimax(board);
+
         Game.nextPlayer();
     }
 
-    // const minimax = (board, emptyCells, isMaximizing) => {
+    // const minimax = (board, isMaximizng) => {
+    //     if (board.checkWin()) {
+    //         return board.getWinner().sign === sign ? 1 : -1;
+    //     } else if (board.checkDraw()) {
+    //         return 0;
+    //     }
 
-
+    //     const emptyCells = board.getEmptyCells();
+    //     for (let cell of emptyCells) {
+    //         let possibleMove = Board();
+    //         console.log(cell);
+    //         console.log(board.getBoard());
+    //         possibleMove.init(board.getBoard());
+    //         possibleMove.update(cell, "O");
+    //         console.log(possibleMove.getBoard());
+    //     }
     // }
 
     return {
@@ -310,13 +352,12 @@ const GameLog = (function () {
 const FormControl = (function () {
     form = document.querySelector("#player-form");
 
-    const clearForm = (inputs) => {
-        inputs.forEach((input) => input.value = "");
+    const clearForm = (input) => {
+        input.value = ""
     }
 
     const getPlayer1 = () => {
         const nameInput = form.querySelector("#p1-name");
-        const signInput = form.querySelector("#p1-sign");
         const isComp = form.querySelector("#p1-isComputer");
 
         if (isComp.checked) {
@@ -324,15 +365,13 @@ const FormControl = (function () {
         }
 
         const name = nameInput.value || nameInput.placeholder;
-        const sign = signInput.value || signInput.placeholder;
-        clearForm([nameInput, signInput]);
+        clearForm(nameInput);
 
-        return Player(name, sign)
+        return Player(name, "X")
     }
 
     const getPlayer2 = () => {
         const nameInput = form.querySelector("#p2-name");
-        const signInput = form.querySelector("#p2-sign");
         const isComp = form.querySelector("#p2-isComputer");
 
         if (isComp.checked) {
@@ -340,10 +379,9 @@ const FormControl = (function () {
         }
 
         const name = nameInput.value || nameInput.placeholder;
-        const sign = signInput.value || signInput.placeholder;
-        clearForm([nameInput, signInput]);
+        clearForm(nameInput);
 
-        return Player(name, sign)
+        return Player(name, "O")
     }
 
     const toggleDisplay = () => {
