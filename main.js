@@ -1,14 +1,28 @@
 // board Factory function to create an instance of board
 const Board = () => {
     let board;
+    let winner = null;
+    let lastUpdate = null;
 
     const init = () => {
+        winner = null;
+        lastUpdate = null;
         board = Array(3).fill(null).map((el) => (Array(3).fill(null)));
         return board
     }
 
     const getBoard = () => {
         return board
+    }
+
+    const setBoard = (newBoard) => {
+        board = [];
+        winner = null;
+        lastUpdate = null;
+
+        for (let i = 0; i < newBoard.length; i++) {
+            board[i] = newBoard[i].slice();
+        }
     }
 
     const getEmptyCells = () => {
@@ -22,8 +36,13 @@ const Board = () => {
         return availableCells;
     }
 
+    const getWinner = () => {
+        return winner
+    }
+
     const update = ({ row, col }, sign) => {
         board[row][col] = sign;
+        lastUpdate = sign;
     }
 
     const checkSimilar = (arr) => {
@@ -74,7 +93,8 @@ const Board = () => {
 
     const checkWin = () => {
         if (checkWinRows() || checkWinCols() || checkWinDiagonals()) {
-            winner = Game.getCurrentPlayer();
+            winner = Game.getCurrentPlayer().sign === lastUpdate ?
+                Game.getCurrentPlayer() : Game.getNextPlayer();
             return true
         }
 
@@ -85,6 +105,8 @@ const Board = () => {
     return {
         init,
         getBoard,
+        setBoard,
+        getWinner,
         getEmptyCells,
         update,
         checkWin,
@@ -176,10 +198,60 @@ const Player = function (name, sign) {
 //Factory function for creating a computer
 const Computer = function (sign) {
     const makeMove = () => {
-        const availableCells = GameBoard.getEmptyCells();
-        const randomPos = availableCells[Math.floor(Math.random() * availableCells.length)];
-        GameBoard.update(randomPos, sign);
+        // const availableCells = GameBoard.getEmptyCells();
+        // const randomPos = availableCells[Math.floor(Math.random() * availableCells.length)];
+        // GameBoard.update(randomPos, sign);
+        const board = Board();
+        board.setBoard(GameBoard.getBoard());
+
+        GameBoard.update(minimax(board, true).bestMove, sign);
         Game.nextPlayer();
+    }
+
+    const minimax = (board, isMaximizing) => {
+        if (board.checkWin()) {
+            console.log(board.getBoard(), board.getWinner());
+            return {
+                score: board.getWinner().sign === sign ? 1 : -1
+            }
+        } else if (board.checkDraw()) {
+            console.log("draw", board.getBoard());
+            return { score: 0 };
+        }
+
+        const availableCells = board.getEmptyCells();
+        let bestMove, bestScore;
+        if (isMaximizing === true) {
+            let score = -Infinity;
+            for (let cell of availableCells) {
+                const tempBoard = Board();
+                tempBoard.setBoard(board.getBoard());
+                tempBoard.update(cell, sign);
+                score = Math.max(score, minimax(tempBoard, false).score);
+                if (bestScore !== score) {
+                    bestScore = score;
+                    bestMove = cell;
+                    if (bestScore === 1) break;
+                }
+                console.log({ bestScore, board: board.getBoard(), cell })
+            }
+            return { score, bestMove }
+        } else {
+            let score = Infinity;
+            for (let cell of availableCells) {
+                const tempBoard = Board();
+                tempBoard.setBoard(board.getBoard());
+                tempBoard.update(cell, Game.getNextPlayer().sign);
+                score = Math.min(score, minimax(tempBoard, true).score);
+                if (bestScore !== score) {
+                    bestScore = score;
+                    bestMove = cell;
+                    if (bestScore === -1) break;
+                }
+                console.log({ bestScore, board: board.getBoard(), cell })
+            }
+            return { score, bestMove }
+        }
     }
 
     return {
@@ -203,6 +275,10 @@ const Game = (function () {
 
     const getCurrentPlayer = () => {
         return currentPlayer
+    }
+
+    const getNextPlayer = () => {
+        return currentPlayer === players[0] ? players[1] : players[0];
     }
 
     const nextPlayer = () => {
@@ -259,7 +335,8 @@ const Game = (function () {
         draw,
         setPlayers,
         nextPlayer,
-        getCurrentPlayer
+        getCurrentPlayer,
+        getNextPlayer
     }
 })();
 
