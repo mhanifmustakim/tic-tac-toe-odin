@@ -279,7 +279,9 @@ const Game = (function () {
 
     const nextPlayer = () => {
         currentPlayer = currentPlayer === players[0] ? players[1] : players[0];
-        if (currentPlayer.type === "Computer" && !isGameOver) currentPlayer.makeMove();
+        if (isGameOver) return
+        GameLog.setLog(`${currentPlayer.name}'s (${currentPlayer.sign}) turn to move`)
+        if (currentPlayer.type === "Computer") currentPlayer.makeMove();
     }
 
     const start = () => {
@@ -299,6 +301,7 @@ const Game = (function () {
         }
 
         GameLog.setPlayers(players);
+        GameLog.setLog(`${currentPlayer.name}'s (${currentPlayer.sign}) turn to move`)
         if (currentPlayer.type === "Computer") currentPlayer.makeMove();
     }
 
