@@ -140,6 +140,7 @@ const Game = (function () {
     const start = () => {
         const gameBoardEl = document.querySelector("#gameBoard");
         gameBoardEl.innerHTML = "";
+        GameBoard.init();
 
         for (let row = 0; row < board.length; row++) {
             for (let col = 0; col < board[row].length; col++) {
@@ -159,7 +160,6 @@ const Game = (function () {
     }
 
     const reset = () => {
-        GameBoard.init();
         GameLog.reset();
         start();
     }
@@ -207,12 +207,20 @@ const GameLog = (function () {
         const playerResetBtn = document.querySelector("#player-reset-btn");
 
         resetBtn.addEventListener("click", Game.reset);
-        playerResetBtn.addEventListener("click", FormControl.toggleDisplay);
+        playerResetBtn.addEventListener("click", hardReset);
     }
 
     const reset = () => {
         setLog("");
         toggleControls();
+    }
+
+    const hardReset = () => {
+        player1Log.innerText = "";
+        player2Log.innerText = "";
+        FormControl.toggleDisplay();
+
+        reset();
     }
 
     const setPlayers = ([player1, player2]) => {
