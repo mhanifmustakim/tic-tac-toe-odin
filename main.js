@@ -1,37 +1,22 @@
-// Handles all logic inside the tic-tac-toe board
-const GameBoard = (function () {
+// board Factory function to create an instance of board
+const Board = () => {
     let board;
 
-    const init = () => {
-        board = Array(3).fill(null).map((el) => (Array(3).fill(null)));
-        return board
+    const init = (newBoard) => {
+        if (!newBoard) {
+            board = Array(3).fill(null).map((el) => (Array(3).fill(null)));
+            return board
+        }
+
+        board = newBoard;
     }
 
     const getBoard = () => {
-        return board;
-    }
-
-    const onClick = (event) => {
-        const cell = event.target;
-
-        // Checks if cell is already populated
-        if (cell.innerText) {
-            cell.removeEventListener("click", onClick);
-            return
-        }
-
-        const pos = {
-            row: parseInt(event.target.getAttribute("data-row")),
-            col: parseInt(event.target.getAttribute("data-col"))
-        }
-
-        Game.getCurrentPlayer().makeMove(pos);
-        cell.removeEventListener("click", onClick);
+        return board
     }
 
     const update = ({ row, col }, sign) => {
         board[row][col] = sign;
-        render();
     }
 
     const checkSimilar = (arr) => {
@@ -84,19 +69,64 @@ const GameBoard = (function () {
         return checkWinRows() || checkWinCols() || checkWinDiagonals();
     }
 
+    return {
+        init,
+        getBoard,
+        update,
+        checkWin,
+        checkDraw
+    }
+}
+
+// Handles all logic inside the tic-tac-toe board
+const GameBoard = (function () {
+    let board = Board();
+
+    const init = () => {
+        return board.init();
+    }
+
+    const getBoard = () => {
+        return board.getBoard();
+    }
+
+    const onClick = (event) => {
+        const cell = event.target;
+        // Checks if cell is already populated
+        if (cell.innerText) {
+            cell.removeEventListener("click", onClick);
+            return
+        }
+
+        const pos = {
+            row: parseInt(event.target.getAttribute("data-row")),
+            col: parseInt(event.target.getAttribute("data-col"))
+        }
+
+        Game.getCurrentPlayer().makeMove(pos);
+        cell.removeEventListener("click", onClick);
+    }
+
+    const update = ({ row, col }, sign) => {
+        console.log({ row, col }, sign);
+        board.update({ row, col }, sign)
+        render();
+    }
+
     const checkEndCondition = () => {
-        if (checkWin()) {
+        if (board.checkWin()) {
             Game.win();
-        } else if (checkDraw()) {
+        } else if (board.checkDraw()) {
             Game.draw();
         }
     }
 
     const render = () => {
-        for (let row = 0; row < board.length; row++) {
-            for (let col = 0; col < board[row].length; col++) {
+        let gameBoard = board.getBoard();
+        for (let row = 0; row < gameBoard.length; row++) {
+            for (let col = 0; col < gameBoard[row].length; col++) {
                 const cell = document.querySelector(`div[data-row="${row}"][data-col="${col}"]`);
-                cell.innerText = board[row][col];
+                cell.innerText = gameBoard[row][col];
             }
         }
         checkEndCondition();
@@ -141,6 +171,11 @@ const Computer = function (sign) {
         Game.nextPlayer();
     }
 
+    // const minimax = (board, emptyCells, isMaximizing) => {
+
+
+    // }
+
     return {
         sign,
         makeMove,
@@ -172,7 +207,7 @@ const Game = (function () {
     const start = () => {
         const gameBoardEl = document.querySelector("#gameBoard");
         gameBoardEl.innerHTML = "";
-        GameBoard.init();
+        board = GameBoard.init();
         isGameOver = false;
 
         for (let row = 0; row < board.length; row++) {
